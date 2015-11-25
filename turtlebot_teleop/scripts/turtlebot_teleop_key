@@ -105,6 +105,11 @@ if __name__=="__main__":
     try:
         print msg
         print vels(speed,turn)
+        
+        twist = Twist()
+        twist.linear.x = 0; twist.linear.y = 0; twist.linear.z = 0
+        twist.angular.x = 0; twist.angular.y = 0; twist.angular.z = 0
+        
         while(1):
             key = getKey()
             if key in moveBindings.keys():
@@ -150,14 +155,14 @@ if __name__=="__main__":
             else:
                 control_turn = target_turn
 
-            twist = Twist()
-            twist.linear.x = control_speed; twist.linear.y = 0; twist.linear.z = 0
-            twist.angular.x = 0; twist.angular.y = 0; twist.angular.z = control_turn
-            pub.publish(twist)
+            if (twist.linear.x != control_speed or twist.angular.z != control_turn):
+               twist.linear.x = control_speed
+               twist.angular.z = control_turn
+               pub.publish(twist)
 
-            #print("loop: {0}".format(count))
-            #print("target: vx: {0}, wz: {1}".format(target_speed, target_turn))
-            #print("publihsed: vx: {0}, wz: {1}".format(twist.linear.x, twist.angular.z))
+               print("loop: {0}".format(count))
+               print("target: vx: {0}, wz: {1}".format(target_speed, target_turn))
+               print("published: vx: {0}, wz: {1}".format(twist.linear.x, twist.angular.z))
 
     except:
         print e
